@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface IngredientService {
 
-    Ingredient findByNameIgnoreCase(String name);
+    Ingredient getIngredientByNameIgnoreCase(String name);
 
 }
