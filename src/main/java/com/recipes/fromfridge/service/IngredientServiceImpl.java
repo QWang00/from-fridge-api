@@ -19,7 +19,7 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredient getIngredientByNameIgnoreCase(String name) {
          return ingredientRepository.findByNameIgnoreCase(name.trim())
                  .orElseThrow(()-> new ItemNotFoundException(
-                         String.format("Ingredient [%s] not recognized, please try again")));
+                         String.format("Ingredient [%s] not recognized, please try again", name)));
     }
 
 
