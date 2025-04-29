@@ -34,7 +34,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     @Override
     public List<FridgeIngredient> getAllFridgeIngredients() {
-        return List.of();
+        return fridgeIngredientRepository.findAll();
     }
 
     @Override
