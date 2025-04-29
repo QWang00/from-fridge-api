@@ -11,9 +11,9 @@ import java.util.List;
 public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     private final FridgeIngredientRepository fridgeIngredientRepository;
-    private final IngredientServiceImpl ingredientService;
+    private final IngredientService ingredientService;
 
-    public FridgeIngredientServiceImpl(FridgeIngredientRepository fridgeIngredientRepository, IngredientServiceImpl ingredientService) {
+    public FridgeIngredientServiceImpl(FridgeIngredientRepository fridgeIngredientRepository, IngredientService ingredientService) {
         this.fridgeIngredientRepository = fridgeIngredientRepository;
         this.ingredientService = ingredientService;
     }
