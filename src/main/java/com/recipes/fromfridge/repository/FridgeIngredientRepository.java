@@ -9,10 +9,5 @@ public interface FridgeIngredientRepository extends JpaRepository<FridgeIngredie
     // Check if an ingredient is already in fridge
     boolean existsByIngredientId(Long ingredientId);
 
-    // Find by ingredient ID
-    List<FridgeIngredient> findByIngredientId(Long ingredientId);
-
-    // Delete by ingredient ID
-    void deleteByIngredientId(Long ingredientId);
 
 }
