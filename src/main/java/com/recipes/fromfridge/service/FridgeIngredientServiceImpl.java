@@ -5,6 +5,8 @@ import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.repository.FridgeIngredientRepository;
 
+import java.util.List;
+
 public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     private final FridgeIngredientRepository fridgeIngredientRepository;
@@ -28,5 +30,20 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
         FridgeIngredient fridgeIngredient = new FridgeIngredient();
         fridgeIngredient.setIngredient(ingredient);
         fridgeIngredientRepository.save(fridgeIngredient);
+    }
+
+    @Override
+    public List<FridgeIngredient> getAllFridgeIngredients() {
+        return List.of();
+    }
+
+    @Override
+    public void removeIngredientFromFridge(Long fridgeIngredientId) {
+
+    }
+
+    @Override
+    public void clearFridge() {
+        fridgeIngredientRepository.deleteAll();
     }
 }
