@@ -10,7 +10,7 @@ public interface FridgeIngredientService {
 
     List<FridgeIngredient> getAllFridgeIngredients();
 
-    void removeIngredientFromFridge(Long fridgeIngredientId);
+    void removeIngredientFromFridge(Integer fridgeIngredientId);
 
     void clearFridge();
 

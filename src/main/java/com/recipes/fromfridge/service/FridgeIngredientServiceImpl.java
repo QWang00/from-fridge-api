@@ -21,8 +21,8 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
     @Override
     public void addIngredientToFridge(String ingredientName) {
         Ingredient ingredient = ingredientService.getIngredientByNameIgnoreCase(ingredientName);
-        Integer ingredientId = ingredient.getId();
-        boolean ingredientInFridge = fridgeIngredientRepository.existsByIngredientId(ingredientId);
+        //Integer ingredientId = ingredient.getId();
+        boolean ingredientInFridge = fridgeIngredientRepository.existsByIngredientId(ingredient.getId());
         if(ingredientInFridge){
             throw new DuplicateItemException(
                     String.format("Ingredient [%s] already exists in the fridge.", ingredientName)
@@ -39,7 +39,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
     }
 
     @Override
-    public void removeIngredientFromFridge(Long fridgeIngredientId) {
+    public void removeIngredientFromFridge(Integer fridgeIngredientId) {
         fridgeIngredientRepository.deleteById(fridgeIngredientId);
     }
 
