@@ -29,5 +29,11 @@ public class FridgeIngredientController {
         return new ResponseEntity<>("Ingredient removed from fridge.", HttpStatus.OK);
     }
 
+    @DeleteMapping("/ingredients")
+    public ResponseEntity<String> clearFridge(){
+        fridgeIngredientService.clearFridge();
+        return new ResponseEntity<>("Fridge cleared!", HttpStatus.OK);
+    }
+
 
 }
