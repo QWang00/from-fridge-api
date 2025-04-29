@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/fridge")
+@RequestMapping("/api/v1/fridge")
 public class FridgeIngredientController {
     private final FridgeIngredientService fridgeIngredientService;
 
@@ -33,6 +33,11 @@ public class FridgeIngredientController {
     public ResponseEntity<String> clearFridge(){
         fridgeIngredientService.clearFridge();
         return new ResponseEntity<>("Fridge cleared!", HttpStatus.OK);
+    }
+
+    @PostMapping("/ingredient")
+    public ResponseEntity<FridgeIngredient> addIngredientToFridge(@RequestParam String ingredient){
+        return new ResponseEntity<>(fridgeIngredientService.addIngredientToFridge(ingredient), HttpStatus.OK);
     }
 
 
