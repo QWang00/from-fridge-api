@@ -8,5 +8,4 @@ public interface IngredientService {
 
     Ingredient findByNameIgnoreCase(String name);
 
-    Ingredient getExistingIngredientOrThrow(String name);
 }

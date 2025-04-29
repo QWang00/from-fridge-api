@@ -22,8 +22,5 @@ public class IngredientServiceImpl implements IngredientService {
                          String.format("Ingredient [%s] not recognized, please try again")));
     }
 
-    @Override
-    public Ingredient getExistingIngredientOrThrow(String name) {
-        return null;
-    }
+
 }
