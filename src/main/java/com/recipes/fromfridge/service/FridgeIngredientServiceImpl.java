@@ -4,9 +4,10 @@ import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.repository.FridgeIngredientRepository;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+@Service
 public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     private final FridgeIngredientRepository fridgeIngredientRepository;
