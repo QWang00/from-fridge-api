@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FridgeIngredientService {
 
-    void addIngredientToFridge(String ingredientName);
+    FridgeIngredient addIngredientToFridge(String ingredientName);
 
     List<FridgeIngredient> getAllFridgeIngredients();
 

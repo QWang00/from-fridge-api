@@ -19,7 +19,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
     }
 
     @Override
-    public void addIngredientToFridge(String ingredientName) {
+    public FridgeIngredient addIngredientToFridge(String ingredientName) {
         Ingredient ingredient = ingredientService.getIngredientByNameIgnoreCase(ingredientName);
         //Integer ingredientId = ingredient.getId();
         boolean ingredientInFridge = fridgeIngredientRepository.existsByIngredientId(ingredient.getId());
@@ -30,7 +30,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
         }
         FridgeIngredient fridgeIngredient = new FridgeIngredient();
         fridgeIngredient.setIngredient(ingredient);
-        fridgeIngredientRepository.save(fridgeIngredient);
+        return fridgeIngredientRepository.save(fridgeIngredient);
     }
 
     @Override
