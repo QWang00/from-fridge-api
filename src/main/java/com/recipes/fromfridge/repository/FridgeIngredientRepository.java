@@ -7,7 +7,7 @@ import java.util.List;
 public interface FridgeIngredientRepository extends JpaRepository<FridgeIngredient, Long> {
 
     // Check if an ingredient is already in fridge
-    boolean existsByIngredientId(Long ingredientId);
+    boolean existsByIngredientId(Integer ingredientId);
 
 
 }
