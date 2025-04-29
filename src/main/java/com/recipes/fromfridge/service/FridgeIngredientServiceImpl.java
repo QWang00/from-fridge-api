@@ -39,7 +39,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     @Override
     public void removeIngredientFromFridge(Long fridgeIngredientId) {
-
+        fridgeIngredientRepository.deleteById(fridgeIngredientId);
     }
 
     @Override
