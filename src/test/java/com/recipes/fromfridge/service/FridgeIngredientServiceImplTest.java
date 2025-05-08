@@ -125,6 +125,35 @@ class FridgeIngredientServiceImplTest {
             Mockito.verify(fridgeIngredientRepository).findAll();
         }
     }
+
+    @Nested
+    class RemoveIngredientFromFridge {
+        @Test
+        @DisplayName("Should remove ingredient from fridge successfully")
+        void shouldRemoveIngredientFromFridge() {
+
+            Integer fridgeIngredientId = 1;
+
+            fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId);
+
+            Mockito.verify(fridgeIngredientRepository).deleteById(fridgeIngredientId);
+        }
+
+        @Test
+        @DisplayName("Should do nothing if ingredient is not in the fridge")
+        void IngredientNotInFridge() {
+            Integer fridgeIngredientId = 1;
+
+            Mockito.doNothing().when(fridgeIngredientRepository).deleteById(fridgeIngredientId);
+
+            fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId);
+
+            Mockito.verify(fridgeIngredientRepository).deleteById(fridgeIngredientId);
+        }
+
+    }
+
+
 }
 
 
