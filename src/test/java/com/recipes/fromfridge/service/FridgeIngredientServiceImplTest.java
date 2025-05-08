@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.service;
 
 import com.recipes.fromfridge.exception.DuplicateItemException;
+import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.Nested;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
@@ -153,7 +154,41 @@ class FridgeIngredientServiceImplTest {
 
     }
 
+    @Nested
+    class ClearFridge {
+        @Test
+        @DisplayName("Should do nothing if fridge is empty")
+        void emptyFridge() {
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList());
 
+            fridgeIngredientService.clearFridge();
+
+            Mockito.verify(fridgeIngredientRepository).deleteAll();
+        }
+
+        @Test
+        @DisplayName("Should remove the only ingredient in the fridge")
+        void fridgeHasOneIngredient() {
+            FridgeIngredient fridgeIngredient = new FridgeIngredient();
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList(fridgeIngredient));
+
+            fridgeIngredientService.clearFridge();
+
+            Mockito.verify(fridgeIngredientRepository).deleteAll();
+        }
+
+        @Test
+        @DisplayName("Should remove all ingredients when there are multiple")
+        void fridgeHasMultiIngredient() {
+            FridgeIngredient fridgeIngredient1 = new FridgeIngredient();
+            FridgeIngredient fridgeIngredient2 = new FridgeIngredient();
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList(fridgeIngredient1, fridgeIngredient2));
+
+            fridgeIngredientService.clearFridge();
+
+            Mockito.verify(fridgeIngredientRepository).deleteAll();
+        }
+    }
 }
 
 
