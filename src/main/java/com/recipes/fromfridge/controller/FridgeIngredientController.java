@@ -1,5 +1,6 @@
 package com.recipes.fromfridge.controller;
 
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.service.FridgeIngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,14 @@ public class FridgeIngredientController {
 
     @DeleteMapping("/ingredient/{id}")
     public ResponseEntity<String> removeIngredientFromFridge (@PathVariable("id") Integer id){
-        fridgeIngredientService.removeIngredientFromFridge(id);
-        return new ResponseEntity<>("Ingredient removed from fridge.", HttpStatus.OK);
+        try {
+            fridgeIngredientService.removeIngredientFromFridge(id);
+            return new ResponseEntity<>("Ingredient removed from fridge.", HttpStatus.OK);
+        } catch (ItemNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/ingredients")
