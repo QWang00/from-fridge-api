@@ -1,5 +1,6 @@
 package com.recipes.fromfridge.controller;
 
+import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.service.FridgeIngredientService;
@@ -25,7 +26,7 @@ public class FridgeIngredientController {
     }
 
     @DeleteMapping("/ingredient/{id}")
-    public ResponseEntity<String> removeIngredientFromFridge (@PathVariable("id") Integer id){
+    public ResponseEntity<String> removeIngredientFromFridge(@PathVariable("id") Integer id) {
         try {
             fridgeIngredientService.removeIngredientFromFridge(id);
             return new ResponseEntity<>("Ingredient removed from fridge.", HttpStatus.OK);
@@ -37,7 +38,7 @@ public class FridgeIngredientController {
     }
 
     @DeleteMapping("/ingredients")
-    public ResponseEntity<String> clearFridge(){
+    public ResponseEntity<String> clearFridge() {
         try {
             fridgeIngredientService.clearFridge();
             return new ResponseEntity<>("Fridge cleared!", HttpStatus.OK);
@@ -47,9 +48,17 @@ public class FridgeIngredientController {
     }
 
     @PostMapping("/ingredient")
-    public ResponseEntity<FridgeIngredient> addIngredientToFridge(@RequestParam String ingredient){
-        return new ResponseEntity<>(fridgeIngredientService.addIngredientToFridge(ingredient), HttpStatus.OK);
+    public ResponseEntity<?> addIngredientToFridge(@RequestParam String ingredient) {
+        try {
+            FridgeIngredient addedIngredient = fridgeIngredientService.addIngredientToFridge(ingredient);
+            return new ResponseEntity<>(addedIngredient, HttpStatus.OK);
+        } catch (DuplicateItemException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (ItemNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
-
-
 }
