@@ -38,8 +38,12 @@ public class FridgeIngredientController {
 
     @DeleteMapping("/ingredients")
     public ResponseEntity<String> clearFridge(){
-        fridgeIngredientService.clearFridge();
-        return new ResponseEntity<>("Fridge cleared!", HttpStatus.OK);
+        try {
+            fridgeIngredientService.clearFridge();
+            return new ResponseEntity<>("Fridge cleared!", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>("Error occurred while clearing the fridge", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/ingredient")
