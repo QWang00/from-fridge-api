@@ -11,6 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -76,5 +80,51 @@ class FridgeIngredientServiceImplTest {
         }
     }
 
+    @Nested
+    class GetAllFridgeIngredients {
+        @Test
+        @DisplayName("Should return an empty list when fridge is empty")
+        void emptyFridge() {
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList());
 
+            List<FridgeIngredient> result = fridgeIngredientService.getAllFridgeIngredients();
+
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
+            Mockito.verify(fridgeIngredientRepository).findAll();
+        }
+
+        @Test
+        @DisplayName("Should return a list with one ingredient when there is one ingredient in the fridge")
+        void singleIngredientInFridge() {
+            FridgeIngredient fridgeIngredient = new FridgeIngredient();
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList(fridgeIngredient));
+
+            List<FridgeIngredient> result = fridgeIngredientService.getAllFridgeIngredients();
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertSame(fridgeIngredient, result.get(0));
+            Mockito.verify(fridgeIngredientRepository).findAll();
+        }
+
+        @Test
+        @DisplayName("Should return a list with multiple ingredients when there are multiple ingredients in the fridge")
+        void multiIngredientInFridge() {
+
+            FridgeIngredient fridgeIngredient1 = new FridgeIngredient();
+            FridgeIngredient fridgeIngredient2 = new FridgeIngredient();
+            Mockito.when(fridgeIngredientRepository.findAll()).thenReturn(Arrays.asList(fridgeIngredient1, fridgeIngredient2));
+
+            List<FridgeIngredient> result = fridgeIngredientService.getAllFridgeIngredients();
+
+            assertNotNull(result);
+            assertEquals(2, result.size());
+            assertSame(fridgeIngredient1, result.get(0));
+            assertSame(fridgeIngredient2, result.get(1));
+            Mockito.verify(fridgeIngredientRepository).findAll();
+        }
+    }
 }
+
+
