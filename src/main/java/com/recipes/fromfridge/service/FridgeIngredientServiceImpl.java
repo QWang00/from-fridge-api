@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.service;
 
 import com.recipes.fromfridge.exception.DuplicateItemException;
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.repository.FridgeIngredientRepository;
@@ -40,6 +41,9 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     @Override
     public void removeIngredientFromFridge(Integer fridgeIngredientId) {
+        boolean exists = fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId);
+        if(!exists) throw new ItemNotFoundException("Ingredient not found in the fridge.");
+
         fridgeIngredientRepository.deleteById(fridgeIngredientId);
     }
 
