@@ -22,7 +22,6 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
     @Override
     public FridgeIngredient addIngredientToFridge(String ingredientName) {
         Ingredient ingredient = ingredientService.getIngredientByNameIgnoreCase(ingredientName);
-        //Integer ingredientId = ingredient.getId();
         boolean ingredientInFridge = fridgeIngredientRepository.existsByIngredientId(ingredient.getId());
         if(ingredientInFridge){
             throw new DuplicateItemException(
