@@ -4,6 +4,7 @@ import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.service.FridgeIngredientService;
+import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,6 @@ public class FridgeIngredientControllerTest {
     private FridgeIngredientService fridgeIngredientService;
 
     @Nested
-    @DisplayName("GET /api/v1/fridge/ingredients")
     class GetAllFridgeIngredients {
         @Test
         @DisplayName("Should return empty list and 200 status when fridge is empty")
@@ -106,6 +106,51 @@ public class FridgeIngredientControllerTest {
                     .andExpect(content().string("Invalid ingredient ID"));
 
             verify(fridgeIngredientService, times(1)).removeIngredientFromFridge(invalidIngredientId);
+        }
+    }
+
+    @Nested
+    class ClearFridge {
+
+        @Test
+        @DisplayName("Should return success and 200 status when fridge is cleared successfully")
+        void clearFridgeSuccessfully() throws Exception {
+            doNothing().when(fridgeIngredientService).clearFridge();
+
+            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Fridge cleared!"));
+
+            verify(fridgeIngredientService, times(1)).clearFridge();
+        }
+
+        @Test
+        @DisplayName("Should return success and 200 status when fridge is already empty")
+        void clearEmptyFridge() throws Exception {
+            doNothing().when(fridgeIngredientService).clearFridge();
+
+            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Fridge cleared!"));
+
+            verify(fridgeIngredientService, times(1)).clearFridge();
+        }
+
+        @Test
+        @DisplayName("Should return 404 if there is an issue clearing the fridge")
+        void clearFridgeFailure() throws Exception {
+
+            doThrow(new RuntimeException("Error occurred while clearing the fridge")).when(fridgeIngredientService).clearFridge();
+
+            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(content().string("Error occurred while clearing the fridge"));
+
+
+            verify(fridgeIngredientService, times(1)).clearFridge();
         }
     }
 }
