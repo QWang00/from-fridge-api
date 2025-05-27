@@ -70,7 +70,7 @@ public class RecipeServiceImpl implements RecipeService{
         List<String> matchedIngredient = new ArrayList<>();
 
         for(RecipeIngredient ri : recipe.getIngredients()){
-            if(ingredientIds.contains(ri.getId())) {
+            if(ingredientIds.contains(ri.getIngredient().getId())) {
                 matchedCount++;
                 matchedIngredient.add(ri.getIngredient().getName());
             }
