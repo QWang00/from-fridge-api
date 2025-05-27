@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.service;
 
 import com.recipes.fromfridge.exception.DuplicateItemException;
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.model.Recipe;
 import com.recipes.fromfridge.model.RecipeIngredient;
@@ -23,7 +24,22 @@ public class RecipeServiceImpl implements RecipeService{
 
     @Override
     public List<Recipe> searchRecipesByIngredientNames(List<String> ingredientNames) {
-        return List.of();
+        if(ingredientNames.size() > 5) throw new IllegalArgumentException("You can enter up to 5 ingredients.");
+        List<Integer> ingredientIds = validateAndGetIngredientIds(ingredientNames);
+
+        List<Recipe> recipesByIngredientIds = recipeRepository.findRecipesByIngredientIds(ingredientIds);
+        if (recipesByIngredientIds.isEmpty()) {
+            throw new ItemNotFoundException("No recipe found matching the given ingredients.");
+        }
+
+        List<RecipeMatchInfo> recipeMatchInfos = new ArrayList<>();
+
+        for(Recipe recipe : recipesByIngredientIds){
+            RecipeMatchInfo recipeMatchInfo = getRecipeMatchInfo(recipe, ingredientIds);
+            recipeMatchInfos.add(recipeMatchInfo);
+        }
+
+        return sortByMatchCount(recipeMatchInfos);
     }
 
     private List<Integer> validateAndGetIngredientIds(List<String> ingredientNames) {
@@ -56,8 +72,13 @@ public class RecipeServiceImpl implements RecipeService{
         return new RecipeMatchInfo(recipe, matchedCount, matchedIngredient);
     }
 
-    private List<RecipeMatchInfo> sortByMatchCount(List<RecipeMatchInfo> matchInfoList) {
+    private List<Recipe> sortByMatchCount(List<RecipeMatchInfo> matchInfoList) {
         matchInfoList.sort(Comparator.comparing(RecipeMatchInfo::matchedCount).reversed());
-        return matchInfoList;
+
+        List<Recipe> sortedRecipes = new ArrayList<>();
+        for(RecipeMatchInfo recipeInfo : matchInfoList) {
+            sortedRecipes.add(recipeInfo.recipe());
+        }
+        return sortedRecipes;
     }
 }
