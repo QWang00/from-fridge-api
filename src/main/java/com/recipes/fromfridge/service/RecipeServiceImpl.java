@@ -3,6 +3,7 @@ package com.recipes.fromfridge.service;
 import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.model.Recipe;
+import com.recipes.fromfridge.model.RecipeIngredient;
 import com.recipes.fromfridge.repository.IngredientRepository;
 import com.recipes.fromfridge.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,17 @@ public class RecipeServiceImpl implements RecipeService{
         return ingredientIds;
     }
 
-    private RecipeMatchInfo getRecipeMatchInfo(Recipe recipe, List<Integer> recipeIds) {
-        return null;
+    private RecipeMatchInfo getRecipeMatchInfo(Recipe recipe, List<Integer> ingredientIds) {
+        int matchedCount = 0;
+        List<String> matchedIngredient = new ArrayList<>();
+
+        for(RecipeIngredient ri : recipe.getIngredients()){
+            if(ingredientIds.contains(ri.getId())) {
+                matchedCount++;
+                matchedIngredient.add(ri.getIngredient().getName());
+            }
+        }
+        return new RecipeMatchInfo(recipe, matchedCount, matchedIngredient);
     }
 
     private List<RecipeMatchInfo> sortByMatchCount(List<RecipeMatchInfo> RecipesMatchInfo) {
