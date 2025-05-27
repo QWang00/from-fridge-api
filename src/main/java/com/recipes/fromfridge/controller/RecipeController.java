@@ -1,5 +1,6 @@
 package com.recipes.fromfridge.controller;
 
+import com.recipes.fromfridge.dto.RecipePreviewResponse;
 import com.recipes.fromfridge.model.Recipe;
 import com.recipes.fromfridge.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class RecipeController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Recipe>> searchRecipesByIngredientNames(@RequestParam List<String> ingredientNames){
+    public ResponseEntity<List<RecipePreviewResponse>> searchRecipesByIngredientNames(@RequestParam List<String> ingredientNames){
         if (ingredientNames == null || ingredientNames.isEmpty()) {
             throw new IllegalArgumentException("Please provide at least one ingredient.");
         }
