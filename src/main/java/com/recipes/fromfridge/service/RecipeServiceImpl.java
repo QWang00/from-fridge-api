@@ -1,11 +1,11 @@
 package com.recipes.fromfridge.service;
 
+import com.recipes.fromfridge.dto.RecipePreviewResponse;
 import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.model.Recipe;
 import com.recipes.fromfridge.model.RecipeIngredient;
-import com.recipes.fromfridge.repository.IngredientRepository;
 import com.recipes.fromfridge.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public List<Recipe> searchRecipesByIngredientNames(List<String> ingredientNames) {
+    public List<RecipePreviewResponse> searchRecipesByIngredientNames(List<String> ingredientNames) {
         if(ingredientNames.size() > 5) throw new IllegalArgumentException("You can enter up to 5 ingredients.");
         List<Integer> ingredientIds = validateAndGetIngredientIds(ingredientNames);
 
@@ -39,7 +39,13 @@ public class RecipeServiceImpl implements RecipeService{
             recipeMatchInfos.add(recipeMatchInfo);
         }
 
-        return sortByMatchCount(recipeMatchInfos);
+        return sortByMatchCount(recipeMatchInfos).stream()
+                .map(info -> new RecipePreviewResponse(
+                        info.recipe().getTitle(),
+                        info.recipe().getImageUrl(),
+                        info.matchedCount()
+                ))
+                .toList();
     }
 
     private List<Integer> validateAndGetIngredientIds(List<String> ingredientNames) {
