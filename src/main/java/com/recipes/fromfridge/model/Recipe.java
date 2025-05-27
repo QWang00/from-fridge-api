@@ -13,7 +13,6 @@ import org.hibernate.type.SqlTypes;
 @Getter
 @Table(name = "recipe")
 public class Recipe {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
