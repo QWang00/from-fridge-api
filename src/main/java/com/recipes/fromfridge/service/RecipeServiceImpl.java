@@ -56,7 +56,8 @@ public class RecipeServiceImpl implements RecipeService{
         return new RecipeMatchInfo(recipe, matchedCount, matchedIngredient);
     }
 
-    private List<RecipeMatchInfo> sortByMatchCount(List<RecipeMatchInfo> RecipesMatchInfo) {
-        return null;
+    private List<RecipeMatchInfo> sortByMatchCount(List<RecipeMatchInfo> matchInfoList) {
+        matchInfoList.sort(Comparator.comparing(RecipeMatchInfo::matchedCount).reversed());
+        return matchInfoList;
     }
 }
