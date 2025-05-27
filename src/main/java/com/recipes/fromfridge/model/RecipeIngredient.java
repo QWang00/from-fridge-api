@@ -1,5 +1,6 @@
 package com.recipes.fromfridge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class RecipeIngredient {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "recipe_id", nullable = false)
+    @JsonIgnore
     private Recipe recipe;
 
     @ManyToOne(optional = false)
