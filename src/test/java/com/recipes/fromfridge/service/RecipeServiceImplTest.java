@@ -162,6 +162,37 @@ class RecipeServiceImplTest {
             assertEquals(1, results.get(1).matchedCount());
         }
 
+        @Test
+        @DisplayName("Should return recipe with full ingredient match")
+        void fullyMatchedIngredients() {
+            Ingredient flour = new Ingredient(1, "flour");
+            Ingredient egg = new Ingredient(2, "egg");
+
+            Recipe pancake = Recipe.builder()
+                    .id(1)
+                    .title("Pancake")
+                    .imageUrl("img")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(flour).build(),
+                            RecipeIngredient.builder().ingredient(egg).build()
+                    ))
+                    .build();
+
+            when(ingredientService.getIngredientByNameIgnoreCase("flour")).thenReturn(flour);
+            when(ingredientService.getIngredientByNameIgnoreCase("egg")).thenReturn(egg);
+            when(recipeRepository.findRecipesByIngredientIds(anyList()))
+                    .thenReturn(List.of(pancake));
+
+            List<RecipePreviewResponse> results = recipeService.searchRecipesByIngredientNames(List.of("flour", "egg"));
+
+            assertEquals(1, results.size());
+            assertEquals("Pancake", results.get(0).title());
+            assertEquals(2, results.get(0).matchedCount());
+        }
+
+
+
+
 
 
 
