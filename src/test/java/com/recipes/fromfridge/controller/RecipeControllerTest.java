@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.controller;
 
 import com.recipes.fromfridge.dto.RecipePreviewResponse;
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.service.RecipeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,18 @@ class RecipeControllerTest {
                     .andExpect(jsonPath("$[0].imageUrl").value("img.jpg"))
                     .andExpect(jsonPath("$[0].matchedCount").value(2));
         }
+
+        @Test
+        @DisplayName("Should return 404 when no matching recipes found")
+        void noMatchingRecipesFound() throws Exception {
+            when(recipeService.searchRecipesByIngredientNames(List.of("egg", "milk")))
+                    .thenThrow(new ItemNotFoundException("No recipe found matching the given ingredients."));
+
+            mockMvc.perform(get("/api/v1/from-fridge/recipes/search")
+                            .param("ingredientNames", "egg", "milk"))
+                    .andExpect(status().isNotFound());
+        }
+
 
 
 
