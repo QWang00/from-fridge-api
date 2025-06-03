@@ -190,6 +190,29 @@ class RecipeServiceImplTest {
             assertEquals(2, results.get(0).matchedCount());
         }
 
+        @Test
+        @DisplayName("Should not include recipes with 0 matched ingredients")
+        void unmatchedIngredients() {
+            Ingredient egg = new Ingredient(1, "egg");
+            Ingredient anchovy = new Ingredient(99, "anchovy");
+
+            Recipe unrelatedRecipe = Recipe.builder()
+                    .id(1)
+                    .title("Anchovy Salad")
+                    .imageUrl("url")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(anchovy).build()
+                    ))
+                    .build();
+
+            when(ingredientService.getIngredientByNameIgnoreCase("egg")).thenReturn(egg);
+            when(recipeRepository.findRecipesByIngredientIds(anyList()))
+                    .thenReturn(List.of(unrelatedRecipe));
+
+            List<RecipePreviewResponse> result = recipeService.searchRecipesByIngredientNames(List.of("egg"));
+
+            assertEquals(0, result.size());
+        }
 
 
 
