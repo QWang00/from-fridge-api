@@ -42,6 +42,7 @@ public class RecipeServiceImpl implements RecipeService{
         }
 
         return sortByMatchCount(recipeMatchInfos).stream()
+                .filter(info -> info.matchedCount() > 0)
                 .map(info -> new RecipePreviewResponse(
                         info.recipe().getTitle(),
                         info.recipe().getImageUrl(),
