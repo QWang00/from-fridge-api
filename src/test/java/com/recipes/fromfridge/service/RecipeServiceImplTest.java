@@ -1,5 +1,6 @@
 package com.recipes.fromfridge.service;
 
+import com.recipes.fromfridge.dto.RecipeDetailDto;
 import com.recipes.fromfridge.dto.RecipePreviewResponse;
 import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.exception.ItemNotFoundException;
@@ -13,12 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Nested;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
+import com.recipes.fromfridge.dto.IngredientDetailDto;
+import java.util.*;
+import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -251,15 +249,93 @@ class RecipeServiceImplTest {
             assertTrue(Set.of("Dish A", "Dish B").contains(result.get(0).title()));
         }
 
-
-
-
-
-
-
-
-
-
     }
 
+    @Nested
+    class GetRecipeDetailById {
+
+        private Recipe buildRecipeWithIngredients(String... names) {
+            List<RecipeIngredient> ingredients =
+                    List.of(names).stream()
+                            .map(name -> RecipeIngredient.builder()
+                                    .ingredient(new Ingredient(null, name))
+                                    .quantity("1 cup")
+                                    .preparation("chopped")
+                                    .build())
+                            .collect(Collectors.toList());
+
+            return Recipe.builder()
+                    .id(1)
+                    .title("Sample Recipe")
+                    .imageUrl("sample.jpg")
+                    .servings(2)
+                    .difficulty("Easy")
+                    .cookTime(30)
+                    .description("Sample description")
+                    .method(List.of("Step 1", "Step 2"))
+                    .ingredients(ingredients)
+                    .build();
+        }
+
+        @Test
+        @DisplayName("Should return recipe with 2 matched ingredients correctly marked")
+        void matchedIngredientsProperlyMarked() {
+            Recipe recipe = buildRecipeWithIngredients("Egg", "Milk", "Sugar");
+
+            when(recipeRepository.findById(1)).thenReturn(Optional.of(recipe));
+
+            List<String> matched = List.of("egg", "milk");
+
+            RecipeDetailDto result = recipeService.getRecipeDetailById(1, matched);
+
+            assertEquals(2, result.matchedCount());
+            assertTrue(result.ingredients().stream()
+                    .filter(i -> i.name().equalsIgnoreCase("Egg") || i.name().equalsIgnoreCase("Milk"))
+                    .allMatch(IngredientDetailDto::owned));
+            assertTrue(result.ingredients().stream()
+                    .filter(i -> i.name().equalsIgnoreCase("Sugar"))
+                    .allMatch(i -> !i.owned()));
+        }
+
+        @Test
+        @DisplayName("Should return recipe with all ingredients matched")
+        void allIngredientsMatched() {
+            Recipe recipe = buildRecipeWithIngredients("Egg", "Milk");
+
+            when(recipeRepository.findById(1)).thenReturn(Optional.of(recipe));
+
+            List<String> matched = List.of("egg", "milk");
+
+            RecipeDetailDto result = recipeService.getRecipeDetailById(1, matched);
+
+            assertEquals(2, result.matchedCount());
+            assertTrue(result.ingredients().stream().allMatch(IngredientDetailDto::owned));
+        }
+
+
+        @Test
+        @DisplayName("Should match ingredients case-insensitively")
+        void caseInsensitiveMatching() {
+            Recipe recipe = buildRecipeWithIngredients("Egg");
+
+            when(recipeRepository.findById(1)).thenReturn(Optional.of(recipe));
+
+            List<String> matched = List.of("egg");
+
+            RecipeDetailDto result = recipeService.getRecipeDetailById(1, matched);
+
+            assertEquals(1, result.matchedCount());
+            assertTrue(result.ingredients().get(0).owned());
+        }
+
+
+        @Test
+        @DisplayName("Should throw ItemNotFoundException if recipe not found")
+        void recipeNotFound() {
+            when(recipeRepository.findById(999)).thenReturn(Optional.empty());
+
+            assertThrows(ItemNotFoundException.class, () -> recipeService.getRecipeDetailById(999, List.of("egg")));
+        }
+
+    }
 }
