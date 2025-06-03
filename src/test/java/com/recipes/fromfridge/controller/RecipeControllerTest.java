@@ -36,7 +36,25 @@ class RecipeControllerTest {
                     .andExpect(status().isBadRequest());
         }
 
+        @Test
+        @DisplayName("Should return 200 and recipe preview list when ingredients are valid")
+        void ingredientsAreValid() throws Exception {
+            List<RecipePreviewResponse> mockResponse = List.of(
+                    new RecipePreviewResponse("Omelette", "img.jpg", 2),
+                    new RecipePreviewResponse("Boiled Egg", "img2.jpg", 1)
+            );
 
+            when(recipeService.searchRecipesByIngredientNames(List.of("egg", "milk")))
+                    .thenReturn(mockResponse);
+
+            mockMvc.perform(get("/api/v1/from-fridge/recipes/search")
+                            .param("ingredientNames", "egg", "milk"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$[0].title").value("Omelette"))
+                    .andExpect(jsonPath("$[0].imageUrl").value("img.jpg"))
+                    .andExpect(jsonPath("$[0].matchedCount").value(2));
+        }
 
 
 
