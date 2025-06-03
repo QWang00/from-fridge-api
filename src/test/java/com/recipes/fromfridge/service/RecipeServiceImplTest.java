@@ -71,6 +71,22 @@ class RecipeServiceImplTest {
             assertEquals("Ingredient [egg] already exists, please try again.", exception.getMessage());
         }
 
+        @Test
+        @DisplayName("Should throw DuplicateItemException when duplicate ingredients contain spaces")
+        void duplicateIngredientsWithSpaces() {
+            List<String> ingredients = List.of("egg ", " egg");
+
+            when(ingredientService.getIngredientByNameIgnoreCase(anyString()))
+                    .thenReturn(new Ingredient(1, "egg"));
+
+            DuplicateItemException exception = assertThrows(DuplicateItemException.class, () -> {
+                recipeService.searchRecipesByIngredientNames(ingredients);
+            });
+
+            assertEquals("Ingredient [ egg] already exists, please try again.", exception.getMessage());
+        }
+
+
 
 
 
