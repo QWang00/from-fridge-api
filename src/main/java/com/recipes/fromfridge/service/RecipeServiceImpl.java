@@ -53,11 +53,11 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public RecipeDetailDto getRecipeDetailById(Integer recipeId, List<String> ownedIngredients) {
+    public RecipeDetailDto getRecipeDetailById(Integer recipeId, List<String> matchedIngredients) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ItemNotFoundException("Recipe not found"));
 
-        Set<String> ownedSet = ownedIngredients.stream()
+        Set<String> matchedSet = matchedIngredients.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());
 
@@ -66,7 +66,7 @@ public class RecipeServiceImpl implements RecipeService{
                         ri.getIngredient().getName(),
                         ri.getQuantity(),
                         ri.getPreparation(),
-                        ownedSet.contains(ri.getIngredient().getName().toLowerCase())
+                        matchedSet.contains(ri.getIngredient().getName().toLowerCase())
                 ))
                 .toList();
 
@@ -79,7 +79,7 @@ public class RecipeServiceImpl implements RecipeService{
                 recipe.getMethod(),
                 recipe.getDescription(),
                 ingredientDetails,
-                ownedSet.size()
+                matchedSet.size()
         );
     }
 

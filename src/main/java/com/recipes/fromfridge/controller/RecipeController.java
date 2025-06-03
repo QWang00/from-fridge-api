@@ -33,7 +33,7 @@ public class RecipeController {
     @GetMapping("/{id}/detail")
     public ResponseEntity<RecipeDetailDto> getRecipeDetail(
             @PathVariable Integer id,
-            @RequestParam List<String> ownedIngredients) {
-        return ResponseEntity.ok(recipeService.getRecipeDetailById(id, ownedIngredients));
+            @RequestParam List<String> matchedIngredients) {
+        return ResponseEntity.ok(recipeService.getRecipeDetailById(id, matchedIngredients));
     }
 }
