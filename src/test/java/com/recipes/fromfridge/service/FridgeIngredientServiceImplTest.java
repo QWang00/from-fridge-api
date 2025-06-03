@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.service;
 
 import com.recipes.fromfridge.exception.DuplicateItemException;
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import org.junit.jupiter.api.Nested;
 import com.recipes.fromfridge.model.FridgeIngredient;
 import com.recipes.fromfridge.model.Ingredient;
@@ -13,6 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -131,6 +133,7 @@ class FridgeIngredientServiceImplTest {
         void shouldRemoveIngredientFromFridge() {
 
             Integer fridgeIngredientId = 1;
+            Mockito.when(fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId)).thenReturn(true);
 
             fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId);
 
@@ -141,14 +144,15 @@ class FridgeIngredientServiceImplTest {
         @DisplayName("Should do nothing if ingredient is not in the fridge")
         void IngredientNotInFridge() {
             Integer fridgeIngredientId = 1;
+            Mockito.when(fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId)).thenReturn(false);
 
-            Mockito.doNothing().when(fridgeIngredientRepository).deleteById(fridgeIngredientId);
+            ItemNotFoundException thrown = assertThrows(
+                    ItemNotFoundException.class,
+                    () -> fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId)
+            );
 
-            fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId);
-
-            Mockito.verify(fridgeIngredientRepository).deleteById(fridgeIngredientId);
+            assertEquals("Ingredient not found in the fridge.", thrown.getMessage());
         }
-
     }
 
     @Nested
