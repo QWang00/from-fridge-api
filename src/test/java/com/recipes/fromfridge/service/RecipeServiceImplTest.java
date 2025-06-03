@@ -41,7 +41,20 @@ class RecipeServiceImplTest {
             assertEquals("You can enter up to 5 ingredients.", exception.getMessage());
         }
 
+        @Test
+        @DisplayName("Should throw DuplicateItemException when duplicate ingredients are entered")
+        void duplicateIngredientsProvided() {
+            List<String> ingredients = List.of("egg", "egg");
 
+            when(ingredientService.getIngredientByNameIgnoreCase(anyString()))
+                    .thenReturn(new Ingredient(1, "egg"));
+
+            DuplicateItemException exception = assertThrows(DuplicateItemException.class, () -> {
+                recipeService.searchRecipesByIngredientNames(ingredients);
+            });
+
+            assertEquals("Ingredient [egg] already exists, please try again.", exception.getMessage());
+        }
 
 
 
