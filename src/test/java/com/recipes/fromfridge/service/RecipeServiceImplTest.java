@@ -102,7 +102,22 @@ class RecipeServiceImplTest {
             assertEquals("No recipe found matching the given ingredients.", exception.getMessage());
         }
 
+        @Test
+        @DisplayName("Should throw ItemNotFoundException when no recipes match the given ingredients")
+        void noMatchingRecipesFound() {
+            List<String> ingredients = List.of("egg", "milk");
 
+            when(ingredientService.getIngredientByNameIgnoreCase("egg")).thenReturn(new Ingredient(1, "egg"));
+            when(ingredientService.getIngredientByNameIgnoreCase("milk")).thenReturn(new Ingredient(2, "milk"));
+
+            when(recipeRepository.findRecipesByIngredientIds(anyList())).thenReturn(Collections.emptyList());
+
+            ItemNotFoundException exception = assertThrows(ItemNotFoundException.class, () -> {
+                recipeService.searchRecipesByIngredientNames(ingredients);
+            });
+
+            assertEquals("No recipe found matching the given ingredients.", exception.getMessage());
+        }
 
 
 
