@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Nested;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -213,6 +215,42 @@ class RecipeServiceImplTest {
 
             assertEquals(0, result.size());
         }
+
+        @Test
+        @DisplayName("Should return recipes with equal matched counts in consistent order")
+        void equalMatchedCountRecipes() {
+            Ingredient egg = new Ingredient(1, "egg");
+
+            Recipe r1 = Recipe.builder()
+                    .id(1)
+                    .title("Dish A")
+                    .imageUrl("imgA")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(egg).build()
+                    ))
+                    .build();
+
+            Recipe r2 = Recipe.builder()
+                    .id(2)
+                    .title("Dish B")
+                    .imageUrl("imgB")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(egg).build()
+                    ))
+                    .build();
+
+            when(ingredientService.getIngredientByNameIgnoreCase("egg")).thenReturn(egg);
+            when(recipeRepository.findRecipesByIngredientIds(anyList()))
+                    .thenReturn(List.of(r1, r2));
+
+            List<RecipePreviewResponse> result = recipeService.searchRecipesByIngredientNames(List.of("egg"));
+
+            assertEquals(2, result.size());
+            assertEquals(1, result.get(0).matchedCount());
+            assertEquals(1, result.get(1).matchedCount());
+            assertTrue(Set.of("Dish A", "Dish B").contains(result.get(0).title()));
+        }
+
 
 
 
