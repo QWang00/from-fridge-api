@@ -1,8 +1,11 @@
 package com.recipes.fromfridge.service;
 
+import com.recipes.fromfridge.dto.RecipePreviewResponse;
 import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.Ingredient;
+import com.recipes.fromfridge.model.Recipe;
+import com.recipes.fromfridge.model.RecipeIngredient;
 import com.recipes.fromfridge.repository.RecipeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Nested;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,6 +123,44 @@ class RecipeServiceImplTest {
             assertEquals("No recipe found matching the given ingredients.", exception.getMessage());
         }
 
+        @Test
+        @DisplayName("Should return recipes sorted by matched ingredient count")
+        void partiallyMatchedIngredients() {
+            Ingredient egg = new Ingredient(1, "egg");
+            Ingredient milk = new Ingredient(2, "milk");
+
+            Recipe recipe1 = Recipe.builder()
+                    .id(1)
+                    .title("Omelette")
+                    .imageUrl("img.jpg")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(egg).build(),
+                            RecipeIngredient.builder().ingredient(milk).build()
+                    ))
+                    .build();
+
+            Recipe recipe2 = Recipe.builder()
+                    .id(1)
+                    .title("Boiled Egg")
+                    .imageUrl("img2")
+                    .ingredients(List.of(
+                            RecipeIngredient.builder().ingredient(egg).build()
+                    ))
+                    .build();
+
+            when(ingredientService.getIngredientByNameIgnoreCase("egg")).thenReturn(egg);
+            when(ingredientService.getIngredientByNameIgnoreCase("milk")).thenReturn(milk);
+            when(recipeRepository.findRecipesByIngredientIds(anyList()))
+                    .thenReturn(List.of(recipe1, recipe2));
+
+            List<RecipePreviewResponse> results = recipeService.searchRecipesByIngredientNames(List.of("egg", "milk"));
+
+            assertEquals(2, results.size());
+            assertEquals("Omelette", results.get(0).title());
+            assertEquals("Boiled Egg", results.get(1).title());
+            assertEquals(2, results.get(0).matchedCount());
+            assertEquals(1, results.get(1).matchedCount());
+        }
 
 
 
