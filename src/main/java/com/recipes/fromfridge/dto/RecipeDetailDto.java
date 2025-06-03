@@ -10,5 +10,6 @@ public record RecipeDetailDto(
         Integer cookTime,
         List<String> method,
         String description,
-        List<IngredientDetailDto> ingredients
+        List<IngredientDetailDto> ingredients,
+        int matchedCount
 ) {}
