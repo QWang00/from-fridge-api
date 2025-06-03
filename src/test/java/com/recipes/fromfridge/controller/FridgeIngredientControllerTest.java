@@ -37,7 +37,7 @@ public class FridgeIngredientControllerTest {
             when(fridgeIngredientService.getAllFridgeIngredients())
                     .thenReturn(Collections.emptyList());
 
-            mockMvc.perform(get("/api/v1/fridge/ingredients")
+            mockMvc.perform(get("/api/v1/from-fridge/fridge/ingredients")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(0)))
@@ -54,7 +54,7 @@ public class FridgeIngredientControllerTest {
             when(fridgeIngredientService.getAllFridgeIngredients())
                     .thenReturn(List.of(fridgeIngredient));
 
-            mockMvc.perform(get("/api/v1/fridge/ingredients")
+            mockMvc.perform(get("/api/v1/from-fridge/fridge/ingredients")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(1)))
@@ -73,7 +73,7 @@ public class FridgeIngredientControllerTest {
 
             doNothing().when(fridgeIngredientService).removeIngredientFromFridge(ingredientId);
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredient/{id}", ingredientId))
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredient/{id}", ingredientId))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Ingredient removed from fridge."));
 
@@ -87,7 +87,7 @@ public class FridgeIngredientControllerTest {
 
             doThrow(new ItemNotFoundException("Ingredient not found in the fridge.")).when(fridgeIngredientService).removeIngredientFromFridge(ingredientId);
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredient/{id}", ingredientId))
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredient/{id}", ingredientId))
                     .andExpect(status().isNotFound())
                     .andExpect(content().string("Ingredient not found in the fridge."));
 
@@ -101,7 +101,7 @@ public class FridgeIngredientControllerTest {
 
             doThrow(new IllegalArgumentException("Invalid ingredient ID")).when(fridgeIngredientService).removeIngredientFromFridge(invalidIngredientId);
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredient/{id}", invalidIngredientId))
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredient/{id}", invalidIngredientId))
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("Invalid ingredient ID"));
 
@@ -117,7 +117,7 @@ public class FridgeIngredientControllerTest {
         void clearFridgeSuccessfully() throws Exception {
             doNothing().when(fridgeIngredientService).clearFridge();
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredients")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Fridge cleared!"));
@@ -130,7 +130,7 @@ public class FridgeIngredientControllerTest {
         void clearEmptyFridge() throws Exception {
             doNothing().when(fridgeIngredientService).clearFridge();
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredients")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Fridge cleared!"));
@@ -144,7 +144,7 @@ public class FridgeIngredientControllerTest {
 
             doThrow(new RuntimeException("Error occurred while clearing the fridge")).when(fridgeIngredientService).clearFridge();
 
-            mockMvc.perform(delete("/api/v1/fridge/ingredients")
+            mockMvc.perform(delete("/api/v1/from-fridge/fridge/ingredients")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError())
                     .andExpect(content().string("Error occurred while clearing the fridge"));
@@ -167,7 +167,7 @@ public class FridgeIngredientControllerTest {
 
             when(fridgeIngredientService.addIngredientToFridge(ingredientName)).thenReturn(fridgeIngredient);
 
-            mockMvc.perform(post("/api/v1/fridge/ingredient")
+            mockMvc.perform(post("/api/v1/from-fridge/fridge/ingredient")
                             .param("ingredient", ingredientName)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -185,7 +185,7 @@ public class FridgeIngredientControllerTest {
             doThrow(new DuplicateItemException("Ingredient [Tomato] already exists in the fridge."))
                     .when(fridgeIngredientService).addIngredientToFridge(ingredientName);
 
-            mockMvc.perform(post("/api/v1/fridge/ingredient")
+            mockMvc.perform(post("/api/v1/from-fridge/fridge/ingredient")
                             .param("ingredient", ingredientName)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isConflict())
@@ -202,7 +202,7 @@ public class FridgeIngredientControllerTest {
             doThrow(new ItemNotFoundException("Ingredient not found in the database."))
                     .when(fridgeIngredientService).addIngredientToFridge(ingredientName);
 
-            mockMvc.perform(post("/api/v1/fridge/ingredient")
+            mockMvc.perform(post("/api/v1/from-fridge/fridge/ingredient")
                             .param("ingredient", ingredientName)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound())
@@ -219,7 +219,7 @@ public class FridgeIngredientControllerTest {
             doThrow(new IllegalArgumentException("Invalid ingredient name"))
                     .when(fridgeIngredientService).addIngredientToFridge(invalidIngredientName);
 
-            mockMvc.perform(post("/api/v1/fridge/ingredient")
+            mockMvc.perform(post("/api/v1/from-fridge/fridge/ingredient")
                             .param("ingredient", invalidIngredientName)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
