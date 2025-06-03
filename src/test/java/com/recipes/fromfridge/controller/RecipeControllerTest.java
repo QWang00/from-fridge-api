@@ -1,0 +1,45 @@
+package com.recipes.fromfridge.controller;
+
+import com.recipes.fromfridge.dto.RecipePreviewResponse;
+import com.recipes.fromfridge.service.RecipeService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(RecipeController.class)
+class RecipeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private RecipeService recipeService;
+
+    @Nested
+    class SearchRecipesByIngredientNames {
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when no ingredients are provided")
+        void noIngredientsProvided() throws Exception {
+            mockMvc.perform(get("/api/v1/from-fridge/recipes/search"))
+                    .andExpect(status().isBadRequest());
+        }
+
+
+
+
+
+    }
+
+}
