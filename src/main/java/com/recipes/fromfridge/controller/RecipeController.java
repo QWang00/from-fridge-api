@@ -1,16 +1,12 @@
 package com.recipes.fromfridge.controller;
 
+import com.recipes.fromfridge.dto.RecipeDetailDto;
 import com.recipes.fromfridge.dto.RecipePreviewResponse;
-import jakarta.validation.constraints.NotEmpty;
 import com.recipes.fromfridge.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -26,7 +22,18 @@ public class RecipeController {
 
     @GetMapping("/search")
     public ResponseEntity<List<RecipePreviewResponse>> searchRecipesByIngredientNames(
-            @RequestParam @NotEmpty(message = "Please provide at least one ingredient.") List<String> ingredientNames) {
-        return new ResponseEntity<>(recipeService.searchRecipesByIngredientNames(ingredientNames), HttpStatus.OK);
+            @RequestParam(required = false) List<String> ingredientNames) {
+        if (ingredientNames == null || ingredientNames.isEmpty()) {
+            throw new IllegalArgumentException("Please provide at least one ingredient.");
+        }
+        return ResponseEntity.ok(recipeService.searchRecipesByIngredientNames(ingredientNames));
+    }
+
+
+    @GetMapping("/{id}/detail")
+    public ResponseEntity<RecipeDetailDto> getRecipeDetail(
+            @PathVariable Integer id,
+            @RequestParam List<String> ownedIngredients) {
+        return ResponseEntity.ok(recipeService.getRecipeDetailById(id, ownedIngredients));
     }
 }
