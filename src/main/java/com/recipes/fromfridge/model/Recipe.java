@@ -11,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 @Table(name = "recipe")
 public class Recipe {
     @Id
