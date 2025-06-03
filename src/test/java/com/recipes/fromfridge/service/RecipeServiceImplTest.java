@@ -1,6 +1,7 @@
 package com.recipes.fromfridge.service;
 
 import com.recipes.fromfridge.exception.DuplicateItemException;
+import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.repository.RecipeRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Nested;
+
+import java.util.Collections;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +89,22 @@ class RecipeServiceImplTest {
 
             assertEquals("Ingredient [ egg] already exists, please try again.", exception.getMessage());
         }
+
+        @Test
+        @DisplayName("Should throw ItemNotFoundException when ingredient list is empty")
+        void emptyIngredientList() {
+            List<String> ingredients = List.of();
+
+            ItemNotFoundException exception = assertThrows(ItemNotFoundException.class, () -> {
+                recipeService.searchRecipesByIngredientNames(ingredients);
+            });
+
+            assertEquals("No recipe found matching the given ingredients.", exception.getMessage());
+        }
+
+
+
+
 
 
 
