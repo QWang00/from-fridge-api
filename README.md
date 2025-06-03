@@ -1,9 +1,6 @@
-
-
-```markdown
 # 🧊 FromFridge API
 
-A Spring Boot RESTful API that helps users reduce food waste by managing fridge ingredients and discovering matching recipes based on available items.
+A Spring Boot RESTful API that helps users reduce food waste by managing fridge ingredients and discovering recipes based on available items.
 
 ---
 
@@ -11,76 +8,59 @@ A Spring Boot RESTful API that helps users reduce food waste by managing fridge 
 
 - Java 17+
 - Spring Boot 3.x
-- Spring Web + Validation
-- Spring Data JPA + PostgreSQL
+- Spring Web (REST)
+- Spring Data JPA (PostgreSQL)
 - Lombok
-- Springdoc OpenAPI 3 (Swagger UI)
-- JUnit + Mockito (for testing)
+- Springdoc OpenAPI (Swagger UI)
+- JUnit 5 + Mockito (unit tests)
 
 ---
 
 ## 📦 Features
 
-### ✅ Fridge Management
-- Add ingredient to fridge (`POST`)
-- Remove specific ingredient from fridge (`DELETE`)
-- Clear all fridge ingredients (`DELETE`)
-- Get all ingredients currently in fridge (`GET`)
-
-### ✅ Recipe Search & Details
-- Search recipes by ingredient names (limit: 5)
-- Get number of matched ingredients per recipe
-- View full recipe detail including ingredients and which ones you already have
+- Add or remove ingredients from a virtual fridge
+- Search for recipes by up to 5 ingredient names
+- Preview matched recipes with number of matched ingredients
+- View recipe detail, including which ingredients you already have
 
 ---
 
-## 📚 REST API Endpoints
-
-### 🔍 Search Recipes
-```
-
-GET /api/v1/from-fridge/recipes/search?ingredientNames=egg,tomato
-
-````
-
-Response:
-```json
-[
-  {
-    "title": "Tomato Egg Stir Fry",
-    "imageUrl": "...",
-    "matchedCount": 2,
-    "matchedIngredients": ["Egg", "Tomato"]
-  }
-]
-````
-
-### 📋 Get Recipe Detail
-
-```
-GET /api/v1/from-fridge/recipes/{id}/detail?matchedIngredients=Egg,Tomato
-```
-
-Response:
-
-```json
-{
-  "title": "Tomato Egg Stir Fry",
-  "matchedCount": 2,
-  "ingredients": [
-    {"name": "Egg", "owned": true},
-    {"name": "Tomato", "owned": true},
-    {"name": "Salt", "owned": false}
-  ]
-}
-```
+## 🌐 REST API Endpoints
 
 ### 🧊 Fridge Endpoints
 
-* `GET /api/v1/from-fridge/fridge/ingredients` – Get all items in fridge
-* `POST /api/v1/from-fridge/fridge/ingredient?ingredient=Egg` – Add item
-* `DELETE /api/v1/from-fridge/fridge/ingredient/{id}` – Remove item by ID
-* `DELETE /api/v1/from-fridge/fridge/ingredients` – Clear all
+| Method | Endpoint |
+|--------|----------|
+| `GET`  | `/api/v1/from-fridge/fridge/ingredients` – Get all fridge ingredients |
+| `POST` | `/api/v1/from-fridge/fridge/ingredient?ingredient=...` – Add an ingredient |
+| `DELETE` | `/api/v1/from-fridge/fridge/ingredient/{id}` – Remove a specific ingredient |
+| `DELETE` | `/api/v1/from-fridge/fridge/ingredients` – Clear all fridge ingredients |
+
+### 🍽️ Recipe Endpoints
+
+| Method | Endpoint |
+|--------|----------|
+| `GET`  | `/api/v1/from-fridge/recipes/search?ingredientNames=...` – Search recipes by up to 5 ingredients |
+| `GET`  | `/api/v1/from-fridge/recipes/{id}/detail?matchedIngredients=...` – Get full recipe detail with matched ingredient flags |
+
+---
+
+## 🔍 API Documentation (Swagger)
+
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- OpenAPI JSON: [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+
+> Swagger is powered by [springdoc-openapi-starter-webmvc-ui](https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui)
+
+---
+
+## 🚀 Running the Application
+
+### Prerequisites
+
+- Java 17+
+- Maven
+- PostgreSQL database
 
 ---
 
@@ -89,7 +69,7 @@ Response:
 1. Clone the repo:
 
    ```bash
-   git clone https://github.com/your-username/from-fridge-api.git
+   git clone https://github.com/QWang00/from-fridge-api.git
    cd from-fridge-api
    ```
 
