@@ -1,5 +1,7 @@
 package com.recipes.fromfridge.service;
 
+import com.recipes.fromfridge.dto.IngredientDetailDto;
+import com.recipes.fromfridge.dto.RecipeDetailDto;
 import com.recipes.fromfridge.dto.RecipePreviewResponse;
 import com.recipes.fromfridge.exception.DuplicateItemException;
 import com.recipes.fromfridge.exception.ItemNotFoundException;
@@ -8,8 +10,8 @@ import com.recipes.fromfridge.model.Recipe;
 import com.recipes.fromfridge.model.RecipeIngredient;
 import com.recipes.fromfridge.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService{
@@ -43,9 +45,41 @@ public class RecipeServiceImpl implements RecipeService{
                 .map(info -> new RecipePreviewResponse(
                         info.recipe().getTitle(),
                         info.recipe().getImageUrl(),
-                        info.matchedCount()
+                        info.matchedCount(),
+                        info.matchedIngredient()
                 ))
                 .toList();
+    }
+
+    @Override
+    public RecipeDetailDto getRecipeDetailById(Integer recipeId, List<String> ownedIngredients) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new ItemNotFoundException("Recipe not found"));
+
+        Set<String> ownedSet = ownedIngredients.stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+
+        List<IngredientDetailDto> ingredientDetails = recipe.getIngredients().stream()
+                .map(ri -> new IngredientDetailDto(
+                        ri.getIngredient().getName(),
+                        ri.getQuantity(),
+                        ri.getPreparation(),
+                        ownedSet.contains(ri.getIngredient().getName().toLowerCase())
+                ))
+                .toList();
+
+        return new RecipeDetailDto(
+                recipe.getTitle(),
+                recipe.getImageUrl(),
+                recipe.getServings(),
+                recipe.getDifficulty(),
+                recipe.getCookTime(),
+                recipe.getMethod(),
+                recipe.getDescription(),
+                ingredientDetails,
+                ownedSet.size()
+        );
     }
 
     private List<Integer> validateAndGetIngredientIds(List<String> ingredientNames) {
