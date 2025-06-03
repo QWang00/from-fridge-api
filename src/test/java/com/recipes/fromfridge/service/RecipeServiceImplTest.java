@@ -56,6 +56,21 @@ class RecipeServiceImplTest {
             assertEquals("Ingredient [egg] already exists, please try again.", exception.getMessage());
         }
 
+        @Test
+        @DisplayName("Should throw DuplicateItemException when duplicate ingredients differ only in case")
+        void duplicateIngredientsWithDifferentCase() {
+            List<String> ingredients = List.of("Egg", "egg");
+
+            when(ingredientService.getIngredientByNameIgnoreCase(anyString()))
+                    .thenReturn(new Ingredient(1, "egg"));
+
+            DuplicateItemException exception = assertThrows(DuplicateItemException.class, () -> {
+                recipeService.searchRecipesByIngredientNames(ingredients);
+            });
+
+            assertEquals("Ingredient [egg] already exists, please try again.", exception.getMessage());
+        }
+
 
 
 
