@@ -133,7 +133,7 @@ class FridgeIngredientServiceImplTest {
         void shouldRemoveIngredientFromFridge() {
 
             Integer fridgeIngredientId = 1;
-            Mockito.when(fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId)).thenReturn(true);
+            Mockito.when(fridgeIngredientRepository.existsById(fridgeIngredientId)).thenReturn(true);
 
             fridgeIngredientService.removeIngredientFromFridge(fridgeIngredientId);
 
@@ -144,7 +144,7 @@ class FridgeIngredientServiceImplTest {
         @DisplayName("Should do nothing if ingredient is not in the fridge")
         void IngredientNotInFridge() {
             Integer fridgeIngredientId = 1;
-            Mockito.when(fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId)).thenReturn(false);
+            Mockito.when(fridgeIngredientRepository.existsById(fridgeIngredientId)).thenReturn(false);
 
             ItemNotFoundException thrown = assertThrows(
                     ItemNotFoundException.class,

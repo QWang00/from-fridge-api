@@ -40,7 +40,7 @@ public class FridgeIngredientServiceImpl implements FridgeIngredientService{
 
     @Override
     public void removeIngredientFromFridge(Integer fridgeIngredientId) {
-        boolean exists = fridgeIngredientRepository.existsByIngredientId(fridgeIngredientId);
+        boolean exists = fridgeIngredientRepository.existsById(fridgeIngredientId);
         if(!exists) throw new ItemNotFoundException("Ingredient not found in the fridge.");
 
         fridgeIngredientRepository.deleteById(fridgeIngredientId);
