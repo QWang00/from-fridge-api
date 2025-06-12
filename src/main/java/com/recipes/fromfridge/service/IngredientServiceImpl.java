@@ -4,7 +4,8 @@ import com.recipes.fromfridge.exception.ItemNotFoundException;
 import com.recipes.fromfridge.model.Ingredient;
 import com.recipes.fromfridge.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+import java.util.List;
+
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -20,6 +21,11 @@ public class IngredientServiceImpl implements IngredientService {
          return ingredientRepository.findByNameIgnoreCase(name.trim())
                  .orElseThrow(()-> new ItemNotFoundException(
                          String.format("Ingredient [%s] not recognized, please try again", name)));
+    }
+
+    @Override
+    public List<Ingredient> searchIngredients(String query) {
+        return ingredientRepository.findByNameContainingIgnoreCase(query.trim());
     }
 
 
